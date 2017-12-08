@@ -76,4 +76,22 @@ class FieldTypes {
         return($result);
     }
     
+    static public function strToTypedValue($type, $strVal){
+        $result= null;
+        if( $strVal !== null && self::isValidType($type) ){
+            $booleanCaster = function($strBoolVal){
+                $strBoolVal = strtolower($booleanCaster);
+                return($strBoolVal === 'true');
+            };
+            $castTypeFunc= array('string'=>'strval','integer'=>'intval','double'=>'floatval','boolean'=>$booleanCaster);
+            
+            if ( array_key_exists($type, $castTypeFunc)  ) {
+                $result = $castTypeFunc[$type]($strVal);
+            } else throw new Exception (self::class.'::IoTEntityFieldTypes wider then supported by method ::strToTypedValue().');
+        }
+        return($result);
+        
+    }
+    
+    
 }

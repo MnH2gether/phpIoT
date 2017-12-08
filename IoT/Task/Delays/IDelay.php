@@ -47,6 +47,7 @@ interface IDelay {
     
     /**
      * Must doing delay on appropriate time.
+     * @return integer Time that was delayed in milliseconds. 
      */
     public function delay();
     

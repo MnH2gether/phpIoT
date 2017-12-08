@@ -42,7 +42,10 @@ use IoT\Entity\Transports\ITransport;
 /**
  * Generated: Nov 3, 2017 12:13:53 AM
  * 
- * Description of SoftDevice
+ * Description of Entity
+ * 
+ * $softDevice = new Entity( new HTTPServers\ThingsBoard(null, 'http://localhost:8080/api/v1/hK46TABNw3fyvBRDj8qm/telemetry', 'GET') );
+ * 
  *
  * @author Semyon Mamonov <semyon.mamonov@gmail.com>
  */

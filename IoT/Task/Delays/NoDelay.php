@@ -50,6 +50,7 @@ class NoDelay extends Delay {
      */
     public function delay() {
         sleep(0); //sleep(0) must returns the quant of machine time to OS then if OS was not loaded then delay will not be produced but need testing.
+        return(0);
     }
 
 }

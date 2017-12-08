@@ -66,10 +66,14 @@ class Task implements ITask {
     
     /**
      * default value is result of spl_object_hash() for current object
+     * 
+     * @param string $name
+     * @return Task Itself
      */
     protected function setName($name = ''){
         if ($name === '') $this->name = spl_object_hash($this);
          else $this->name = $name;
+        return ($this);
     }
     
     /**

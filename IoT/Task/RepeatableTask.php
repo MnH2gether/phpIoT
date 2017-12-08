@@ -64,8 +64,8 @@ class RepeatableTask extends Task{
         do{
             parent::run();
             $this->sendToLogger('it was step #'."$counter");
-            $this->delay->delay();
-            $this->sendToLogger('delay after step #'."$counter".' finished');
+            $delayTime = $this->delay->delay();
+            $this->sendToLogger('delay \''."$delayTime".' millisec.\' after step #'."$counter".' finished.');
             $counter++;
         } while ( !$this->isStoped() );
     }

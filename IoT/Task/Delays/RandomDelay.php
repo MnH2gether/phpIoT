@@ -45,28 +45,27 @@ namespace IoT\Task\Delays;
  */
 class RandomDelay extends Delay {
     
-    protected $minMilis = 500; //0.1 sec
+    protected $minMillis = 500; // 1/2 sec
     
-    protected $maxMilis = 30 * 60 * 1000; // 1/2 of hour
+    protected $maxMillis = 30 * 60 * 1000; // 1/2 of hour
     
-    public function __construct($minMilis, $maxMilis) {
+    public function __construct($minMillis, $maxMillis) {
         $maxRandomValue = mt_getrandmax();
-        if ( $maxMilis * 1000 > $maxRandomValue )  throw new Exception ('Max value for RandomDelay is \''."$maxRandomValue".'\'');
+        if ( $maxMillis * 1000 > $maxRandomValue )  throw new Exception ('Max value for RandomDelay is \''."$maxRandomValue".'\'');
 //        if ( $maxMilis >= intval(PHP_INT_MAX / 1000) ) throw new Exception ('Max value for RandomDelay can\'t be more than \''.strval( intval(PHP_INT_MAX / 1000) ).'\'');
-        if ( $minMilis < 0 )  throw new Exception ('Min value for RandomDelay can\'t be negative.');
+        if ( $minMillis < 0 )  throw new Exception ('Min value for RandomDelay can\'t be negative.');
         
-        $this->maxMilis =  $maxMilis;
-        $this->minMilis = $minMilis;
+        $this->maxMillis =  $maxMillis;
+        $this->minMillis = $minMillis;
     }
     
     /**
      * {@inheritdoc}
      */
     public function delay() {
-        $result = true;
-        $microSec = mt_rand($this->minMilis, $this->maxMilis) * 1000;
-        usleep($microSec);
-        return($result);
+        $milliSec = mt_rand($this->minMillis, $this->maxMillis) ;
+        usleep($milliSec * 1000);
+        return($milliSec);
     }
 
 }
