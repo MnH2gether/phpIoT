@@ -47,7 +47,7 @@ use IoT\Entity\Fields\Field;
  *
  * @author Semyon Mamonov <semyon.mamonov@gmail.com>
  */
-abstract class BaseAction extends BaseActionPrototype{
+abstract class BaseAction extends BaseActionPrototype implements \Serializable{
 
     /**
      *
@@ -84,6 +84,14 @@ abstract class BaseAction extends BaseActionPrototype{
     
     public function clearFields(){
         return($this->_clearFieldEntity($this->fields));        
+    }
+ 
+    public function serialize() {
+        return(serialize($this->fields));
+    }
+    
+    public function unserialize($serialized) {
+        $this->fields = unserialize($serialized);
     }
     
 }

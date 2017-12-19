@@ -47,8 +47,10 @@ interface IRunnable {
     //put your code here
 
     /**
-     * May be invoked in any places but must implement the internal actions
-     * for send request to remote server and return some data in each certain case.
+     * Can be invoked in any places.
+     * For example - it must implement the internal actions
+     * for send request to remote server and return some data
+     * in each certain case for IoT purposes.
      */    
     public function run();
     

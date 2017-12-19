@@ -82,7 +82,7 @@ use IoT\Entity\Fields\Field;
  *
  * @author Semyon Mamonov <semyon.mamonov@gmail.com>
  */
-class Device extends BaseAction {
+class Device extends BaseAction implements \Serializable {
     //put your code here
     
     protected $attributes = null;
@@ -99,9 +99,29 @@ class Device extends BaseAction {
      * 
      * @return \IoT\Entity\ThingsBoard\Device Itself
      */
-    protected function setAccessToken($accessToken){
-        $this->deviceAccessToken= $accessToken;
+    public function setAccessToken($accessToken){
+        $this->deviceAccessToken= $this->testAccessToken($accessToken);
         return($this);
+    }
+
+    /**
+     * Make validation of $accessToken. 
+     * 
+     * @param string $accessToken
+     * @return string Given $accessToken if true otherwise throw exception
+     * @throws Exception
+     */
+    protected function testAccessToken($accessToken){
+        if( empty($accessToken) ) throw new Exception ('Given AccessToken is not valid.');
+        return($accessToken);
+    }
+
+    /**
+     * 
+     * @return string Device's access token (similar to pointed in dashboard of ThingsBoard)
+     */
+    public function getAccessToken(){
+        return($this->deviceAccessToken);
     }
     
     
@@ -126,6 +146,9 @@ class Device extends BaseAction {
     }
 
     public function run(){
+        //validation of access token before run
+        $this->testAccessToken($this->getAccessToken());
+        
         $result = array(1,1);
         //send Data
         //@todo need think about how can to do more weak relation with class IoT\Entity\Transports\HTTPServers\ThingsBoard;
@@ -136,6 +159,9 @@ class Device extends BaseAction {
         return( array_sum($result) === 2);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function getTokenValues(array $tokenNames) {
         $result = array();
         if ( count($tokenNames) === 1) {
@@ -145,4 +171,14 @@ class Device extends BaseAction {
         return($result);
     }
 
+    
+    public function serialize() {
+        return( array(parent::serialize(), serialize($this->attributes) ) );
+    }
+  
+    
+    public function unserialize($serialized) {
+        list($serializedParent, $this->attributes ) = unserialize($serialized);
+        parent::unserialize($serializedParent);
+    }
 }

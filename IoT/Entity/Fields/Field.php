@@ -43,7 +43,7 @@ namespace IoT\Entity\Fields;
  *
  * @author Semyon Mamonov <semyon.mamonov@gmail.com>
  */
-class Field implements IField {
+class Field implements IField, \Serializable {
     //put your code here
     
     private $name = null;
@@ -88,6 +88,14 @@ class Field implements IField {
         if( FieldTypes::isValidValue($this->getType(),$value) ) $this->value= $value;
           else throw new \Exception('Used not appropriate value for this field of \''.$this->getType().'\' type.'); 
         return($this);
+    }
+
+    public function serialize() {
+        return(serialize( array($this->name, $this->type, $this->value) ) );
+    }
+
+    public function unserialize($serialized) {
+        list($this->name, $this->type, $this->value) = unserialize($serialized);
     }
 
 }
