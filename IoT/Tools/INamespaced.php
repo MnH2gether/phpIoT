@@ -37,15 +37,18 @@
 namespace IoT\Tools;
 
 /**
- * Generated: Dec 10, 2017 6:38:17 AM
+ * Generated: Dec 19, 2017 11:39:48 PM
  * 
- * Description of Questionizer
+ * Description of INamespaced
  *
  * @author Semyon Mamonov <semyon.mamonov@gmail.com>
  */
-class Questionizer {
+interface INamespaced {
     //put your code here
     
-    
+    /**
+     * @return string Must return string representation of object's namespace which belongs to.
+     */
+    public function getNamespace();
     
 }

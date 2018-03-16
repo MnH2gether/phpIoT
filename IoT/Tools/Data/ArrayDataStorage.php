@@ -36,6 +36,8 @@
 
 namespace IoT\Tools\Data;
 
+use IoT\Tools\INamespaced;
+
 /**
  * Generated: Dec 18, 2017 11:18:50 PM
  * 
@@ -47,6 +49,10 @@ final class ArrayDataStorage implements IDataStorage {
     
     static protected $instance = null;   
     
+    /**
+     *
+     * @var \ArrayObject 
+     */
     protected $arrayObjectData = null;
 
     protected function __construct() {
@@ -99,9 +105,16 @@ final class ArrayDataStorage implements IDataStorage {
      * @param string|object $namespace
      * @return string
      */
-    protected function getNamespace($namespace){
+    public function getOwnedNamespace($namespace){
         if( !is_null($namespace) && is_object($namespace) ){
-            $result = $namespace::class.$this->getHashSeparator().$this->getOwnerPart($namespace);
+            $ns = get_class($namespace);
+            $ownerPart = $this->getOwnerPart($namespace);
+            if ($namespace instanceof INamespaced) {
+                $ns = $namespace->getNamespace();
+                $tOwner = $this->getOwnerPart($ns);
+                if ( $tOwner !== '' ) $ownerPart = $tOwner;
+            }
+            $result = $ns.$this->getHashSeparator().$ownerPart;
         } else {
             $result= strval($namespace);
         }
@@ -116,7 +129,7 @@ final class ArrayDataStorage implements IDataStorage {
      */
     public function getData($namespace = '') {
         $result = null;
-        $strNS = $this->getNamespace($namespace);
+        $strNS = $this->getOwnedNamespace($namespace);
         if( isset($this->arrayObjectData[$strNS]) ){
             $result= $this->arrayObjectData[$strNS];
         }
@@ -131,7 +144,7 @@ final class ArrayDataStorage implements IDataStorage {
      * @return mixed
      */
     public function getValue($name, $namespace = '') {
-        $strNS = $this->getNamespace($namespace);
+        $strNS = $this->getOwnedNamespace($namespace);
         $data = $this->getData($strNS);
         if ( $data !== null ) {
             $result = $data->getValue($name, $this->getOwnerPart($strNS));
@@ -140,16 +153,13 @@ final class ArrayDataStorage implements IDataStorage {
     }
 
     /**
-     * 
-     * 
-     * @param string|object $namespace
-     * @return ArrayDataStorage Itself
+     * {@inheritdoc}
      */
-    protected function setData($namespace = ''){
-        $strNS = $this->getNamespace($namespace);
+    public function setData($namespace = ''){
+        $strNS = $this->getOwnedNamespace($namespace);
         $owner = $this->getOwnerPart($strNS);
         if ( isset($this->arrayObjectData[$strNS]) ) {
-            trigger_error('Owned data with same\''.$strNS.'\' namespace identifier are exists. It will replaced by new.', E_USER_WARNING);
+            trigger_error('Owned data with same\''.$strNS.'\' namespace identifier are exists already. It will replaced by new.', E_USER_WARNING);
         }
         $this->arrayObjectData[$strNS] = new ArrayOwnedData($owner);
         return($this);
@@ -163,13 +173,24 @@ final class ArrayDataStorage implements IDataStorage {
      * @return type
      */
     public function setValue($name, $value, $namespace = '') {
-        $strNS = $this->getNamespace($namespace);
+        $strNS = $this->getOwnedNamespace($namespace);
         $data = $this->getData($strNS);
         if ( $data !== null ) {
             $data->setValue($name, $value, $this->getOwnerPart($strNS));
         } else {
             $this->setData($strNS);
             $this->setValue($name, $value, $namespace);
+        }
+        return($this);
+    }
+
+    /**
+     * {@inheritedoc}
+     */
+    public function unsetData($namespace = '') {
+        $strNS = $this->getOwnedNamespace($namespace);
+        if ( isset($this->arrayObjectData[$strNS]) ) {
+            unset($this->arrayObjectData[$strNS]);
         }
         return($this);
     }

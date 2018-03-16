@@ -70,7 +70,7 @@ abstract class cURL extends Transport {
         $handle = $this->getHandler();
         if ( $handle !== null && is_resource($handle) ) curl_close($handle);
         $ch = curl_init();
-        if ($ch === false) throw new Exception('Can\'t initialize cURL transport.'); 
+        if ($ch === false) throw new \Exception('Can\'t initialize cURL transport.'); 
         $this->handle = $ch;
         return($this);
     }

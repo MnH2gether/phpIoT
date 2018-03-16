@@ -48,7 +48,7 @@ use IoT\Entity\Transports\ITransport;
  *
  * @author Semyon Mamonov <semyon.mamonov@gmail.com>
  */
-abstract class BaseActionPrototype {
+abstract class BaseActionPrototype implements \Serializable {
 
     /**
      *
@@ -169,6 +169,8 @@ abstract class BaseActionPrototype {
         $method = 'get'.ucfirst($prop);
         if( property_exists($this,$prop) && method_exists($this,$method) && count( $this->$method() ) > 0  ){
             $this->transport->setDataSource($this->$prop);
+        } else {
+            throw new \Exception('Property '.static::class.'::'.$prop.' or method '.static::class.'::'.$method.' (or same in parent classes) does not exists or empty array was returned by method.'); 
         }
         //!!!!!!!!!!!!!!!!! setUrl() not exists in ITransport 
         $this->transport->setUrl($this->assemblyUrl("$Entity".'.'.$prop));
@@ -179,6 +181,17 @@ abstract class BaseActionPrototype {
     
     
     abstract public function run();
+
+    
+    public function serialize() {
+        //Nothig need to serialze.
+        //protected $transport property must be serialized in descendent where implemented setTransport(...) method.
+        return null;
+    }
+    
+    public function unserialize( $serialized ) {
+        $this->url = new Url('');
+    }
     
     
 }

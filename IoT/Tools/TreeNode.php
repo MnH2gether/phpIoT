@@ -1,8 +1,8 @@
 <?php
 /*
- * TreeNode
+ * TreeNode (reincarnation of treetecs.com project)
  * 
- * Copyright (c) 2012, Semyon Mamonov <semyon.mamonov@gmail.com>.
+ * Copyright (c) 2012-2017, Semyon Mamonov <semyon.mamonov@gmail.com>.
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -60,6 +60,8 @@ namespace IoT\Tools;
  *           |    TreeNode    |         |    TreeNode    |
  *           |----------------|         |----------------|
  * </pre>
+ * 
+ * Generated: Dec, 2017 12:15:25 AM
  * 
  * @copyright Semyon Mamonov <semyon.mamonov@gmail.com>
  * @author Semyon Mamonov <semyon.mamonov@gmail.com>
@@ -365,7 +367,7 @@ class TreeNode {
     
     /**
      * Will run callback start from deepest child node slow go up to top.
-     * So named bulbe ( bulbing ) principle. In this case the value that can be returned 
+     * So named bubble ( bubbling ) principle. In this case the value that can be returned 
      * from callback nothing means because recursion always will done up to end.
      *  
      * @param \IoT\Tools\callable $callback
@@ -424,6 +426,22 @@ class TreeNode {
         return($result);
     }
 
+    
+    /**
+     * Print TreeNode structure start from current and to child and down.
+     * @return null 
+     */
+    public function printTree($indent=''){
+        $node = $this;
+        while (!is_null($node)){
+            print($indent.$node->getName().':'.spl_object_hash($node)."\r\n"); 
+            if ( !is_null($node->child) ) {
+                $node->child->printTree( str_repeat( $indent === '' ? '  ' : $indent , 2) ); 
+            }
+            $node = $node->next;
+        }
+    }
+    
 
 }
 

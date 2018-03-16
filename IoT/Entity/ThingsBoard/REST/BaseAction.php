@@ -45,8 +45,18 @@ use IoT\Entity\ThingsBoard\BaseAction as MainBaseAction;
  *
  * @author Semyon Mamonov <semyon.mamonov@gmail.com>
  */
-abstract class BaseAction extends MainBaseAction {
+abstract class BaseAction extends MainBaseAction implements \Serializable {
 
     use BaseActionTrait;     
+    
+    
+    public function serialize() {
+        return(parent::serialize());
+    }
+    
+    public function unserialize($serialized) {
+        parent::unserialize($serialized);
+        $this->setTransport();
+    }
     
 }

@@ -154,8 +154,9 @@ class Device extends BaseAction implements \Serializable {
         //@todo need think about how can to do more weak relation with class IoT\Entity\Transports\HTTPServers\ThingsBoard;
         //because REST\BaseAction allow any instances of ITransport -> setTransport(ITransport $transport = null)
         $this->getTransport()->setMethod('POST');
-        if ( $this->_differentialRun('Device','fields') === false ) $result[0] = 0;
-        if ( $this->_differentialRun('Device','attributes') === false ) $result[1] = 0;
+        //Need to process if count($this->getFields()) > 0 and  count($this->getAttributes()) == 0 ......
+        if ( count($this->getFields()) > 0 && $this->_differentialRun('Device','fields') === false ) $result[0] = 0;
+        if ( count($this->getAttributes()) > 0 && $this->_differentialRun('Device','attributes') === false ) $result[1] = 0;
         return( array_sum($result) === 2);
     }
 
@@ -173,12 +174,18 @@ class Device extends BaseAction implements \Serializable {
 
     
     public function serialize() {
-        return( array(parent::serialize(), serialize($this->attributes) ) );
+        return( serialize( array( parent::serialize(),serialize($this->attributes),serialize($this->getAccessToken()) ) ) );
     }
   
     
     public function unserialize($serialized) {
-        list($serializedParent, $this->attributes ) = unserialize($serialized);
+        list($serializedParent, $serializedAttributes, $serializedAccessToken ) = unserialize($serialized);
         parent::unserialize($serializedParent);
+        
+        $attributes = unserialize($serializedAttributes);
+        if( $attributes === false ) $attributes = new Entity();
+        $this->attributes = $attributes;
+
+        $this->setAccessToken(unserialize($serializedAccessToken));
     }
 }

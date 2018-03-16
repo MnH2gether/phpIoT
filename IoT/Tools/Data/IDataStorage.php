@@ -49,11 +49,32 @@ interface IDataStorage {
     /**
      * 
      * @param string|obj $namespace
+     * @return IOwnedData Instance/container
      */
     public function getData($namespace = '');
     
     
     /**
+     * Must create internal data storage that implements IOwnedData interface.
+     * 
+     * @param string|object $namespace
+     * @return ArrayDataStorage Itself
+     */
+    public function setData($namespace = '');
+    
+    
+    /**
+     * Must remove container for $namespace reference.
+     * 
+     * @param string|object $namespace
+     * @return ArrayDataStorage Itself
+     */
+    public function unsetData($namespace = '');
+    
+    
+    
+    /**
+     * Must return value from internal data storage that implements IOwnedData by $name
      * 
      * @param string $name 
      * @param string|obj $namespace
@@ -63,8 +84,9 @@ interface IDataStorage {
 
     /**
      * This method must set data that associated with certain namespace and name but without access
-     * to storage/container like ArrayObject. Other words It must not have possibility to change
-     * main storage container.
+     * to storage/container like ArrayObject. By other words It must not have possibility to change
+     * main storage container. But if any container for $namespace doesn't exists then need to create
+     * container using setData() method.
      * 
      * @param string $name Certain name of value in $namespace
      * @param mixed $value Value
@@ -73,5 +95,13 @@ interface IDataStorage {
     public function setValue($name, $value, $namespace = '');
     
     
+    /**
+     * This must invoke in all method of this interface for getting actual name space.
+     * Also It can be invoked from out for get full specified string representation for $namespace
+     * 
+     * @param string|object $namespace If string the must return itself.
+     * @return string
+     */
+    public function getOwnedNamespace($namespace);
     
 }

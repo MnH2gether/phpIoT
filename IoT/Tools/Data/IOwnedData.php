@@ -82,5 +82,23 @@ interface IOwnedData {
      */
     public function setValue($name, $value, $owner = '');
     
+    /**
+     * Must do something (trigger the warning) for inform that setted owner not same
+     * as $owner if this case happens. Otherwise just remove appropriate value from storage.
+     * 
+     * @param string $name Or key that identifies value.
+     * @param string $owner It must be any unique value which identifies who wants set data into storage.
+     * 
+     * @return IOwnedData Returns reference at itself.
+     */
+    public function unsetValue($name, $owner = '');
+    
+    
+    /**
+     * Must return all accessible keys in this storage.
+     * 
+     * @return array.
+     */
+    public function getKeys();
     
 }

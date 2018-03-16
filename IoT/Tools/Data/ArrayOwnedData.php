@@ -99,4 +99,26 @@ class ArrayOwnedData implements IOwnedData {
         return($this);
     }
 
+    /**
+     * Remove key -> value pair from data storage
+     *  
+     * @param string $name
+     * @param string $owner
+     * @return IOwnedData Itself
+     */
+    public function unsetValue($name, $owner = '') {
+        if ( $this->isOwnedBy($owner) ){
+            unset($this->data["$name"]);
+        }
+        return($this);
+    }
+
+    /**
+     * 
+     * {@inheritedoc}
+     */
+    public function getKeys() {
+        return(array_keys($this->data));     
+    }
+
 }

@@ -87,11 +87,18 @@ abstract class BaseAction extends BaseActionPrototype implements \Serializable{
     }
  
     public function serialize() {
+        //we don't need invoke parrent serialization method because it nothing does.
         return(serialize($this->fields));
     }
     
     public function unserialize($serialized) {
-        $this->fields = unserialize($serialized);
+        //Parent unserializer doesn't depends from $serialized value
+        parent::unserialize(null);
+        
+        $fields = unserialize($serialized);
+        if( $fields === false ) $fields = new Entity();
+        $this->fields = $fields;
+        
     }
     
 }

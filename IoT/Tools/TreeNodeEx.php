@@ -153,7 +153,7 @@ class TreeNodeEx extends TreeNode{
      * Returns separator of nesting. Can be redefined in descendants.
      * @return string Separator
      */
-    protected function getSeparatorOfNesting(){
+    public function getSeparatorOfNesting(){
         return('.');
     }
 
@@ -219,8 +219,7 @@ class TreeNodeEx extends TreeNode{
         $result[]= $getSafeNodeName($cNode);
         while ( !is_null($cNode->parent) ) {
             if ( !is_null($cNode->parent->child) && $cNode->parent->child === $cNode ){
-                $cNode = $cNode->parent->child;
-                $result[]= $getSafeNodeName($cNode);
+                $result[]= $getSafeNodeName($cNode->parent);
             }
             $cNode = $cNode->parent;
         }
@@ -228,6 +227,29 @@ class TreeNodeEx extends TreeNode{
         return( implode($this->getSeparatorOfNesting(), array_reverse($result)) ); 
     }
     
+    /**
+     * It compare $name with TreeNodeEx node name and if they are equal returns
+     * reference on this node. The search doing start from current node and go 
+     * top of tree until reached first node with same name. Difference consists
+     * in names which comparing. in this function using exact comparision
+     * of short names that returns $node->getName() method.
+     * 
+     * @param string $name
+     * @return TreeNodeEx
+     */
+    public function getClosestByName($name){
+        $result= null;
+        $node = $this;
+        do {
+            if ($name === $node->getName()){
+                $result = $node;
+                break;
+            }
+            $node = $node->parent;
+        } while( !is_null($node)  );
+
+        return($result);
+    }
     
     
     /**
